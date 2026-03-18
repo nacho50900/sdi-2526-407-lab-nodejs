@@ -1,0 +1,16 @@
+
+{
+  "name": "tienda_musica",
+  "Description": "Tienda de música",
+  "version": "1.0.0",
+  "dependencies": {
+
+  },
+  "devDependencies": {
+        "jest": "^29.3.1",
+        "@types/jest": "^29.3.1"
+  },
+  "scripts": {
+  "test": "jest"
+  }
+}
