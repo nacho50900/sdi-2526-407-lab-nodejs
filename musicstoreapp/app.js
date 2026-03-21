@@ -18,7 +18,9 @@ const { MongoClient } = require("mongodb");
 const connectionStrings = 'mongodb+srv://admin:sdi@cluster0.5qxy6r5.mongodb.net/?appName=Cluster0';
 const dbClient = new MongoClient(connectionStrings);
 //app.set('connectionStrings', url);
-require("./routes/songs.js")(app, dbClient);
+let songsRepository = require("./repositories/songsRepository.js");
+songsRepository.init(app, dbClient);
+require("./routes/songs.js")(app, songsRepository);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
