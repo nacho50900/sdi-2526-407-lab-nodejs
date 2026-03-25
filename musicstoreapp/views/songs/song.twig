@@ -16,9 +16,42 @@
 			 <!-- Cambiar el precio por "reproducir" si ya está comprada -->
 		  </div>
 		</div>
-	  </div>
+	 </div>
+	<div>
+		<div id="post-comment-input">
+			<form method="post" action="/comments/{{song._id}}"> <div class="form-group">
+					<input id="comment" type="text" placeholder="Texto a comentar" name="text" class="form-control"/>
+					<span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">Comentar</button>
+            </span>
+				</div>
+			</form>
+		</div>
+
+		<div>
+			<table class="table table-hover">
+				<thead>
+				<tr>
+					<th>Text</th>
+					<th>Author</th>
+					<th class="col-md-1"></th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for comment in comments %}
+					<tr>
+						<td>{{ comment.text }}</td>
+						<td>{{ comment.author }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	 </div>
+
+
 	  
-	 <!-- -->
+	 <!--
 	 <div class="row" style="margin-top: 20px;" >
 		<div class="media col-xs-10">
 			  <div class="media-left media-middle">
@@ -54,4 +87,5 @@
 			  </div>
 		  </div>
 	  </div>
+	   -->
 {% endblock %}

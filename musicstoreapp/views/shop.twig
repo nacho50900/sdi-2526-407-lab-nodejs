@@ -29,7 +29,11 @@
                         <div>{{ song.title }} </div>
                         <div class="small">{{ song.author }} </div>
                         <div class="text-right">{{ song.price }} €</div>
-                        <div><a href="/songs/favourites/add/{{ song._id }}">Añadir a favoritos</a></div>
+                        <div><!--<a href="/songs/favourites/add/{{ song._id }}">Añadir a Favoritos</a> GET-->
+                            <form method="post" action="/songs/favourites/add/{{ song._id }}">
+                                <button type="submit" class="btn btn-sm btn-warning">Añadir a Favoritos</button>
+                            </form>
+                        </div>
                     </a>
                 </div>
             </div>

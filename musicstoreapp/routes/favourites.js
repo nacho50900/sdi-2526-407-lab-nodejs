@@ -16,7 +16,7 @@ module.exports = function(app, favouriteSongsRepository, songsRepository) {
         });
     });
 
-    app.get('/songs/favourites/add/:songId', function(req, res) {
+    app.post('/songs/favourites/add/:songId', function(req, res) {
         let filter = {_id: new ObjectId(req.params.songId)};
         songsRepository.findSong(filter, {}).then(song => {
             if (song == null) {
