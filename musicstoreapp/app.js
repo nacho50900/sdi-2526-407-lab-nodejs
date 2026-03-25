@@ -47,8 +47,13 @@ require("./routes/users.js")(app, usersRepository);
 let indexRouter = require('./routes/index');
 require("./routes/authors.js")(app);
 
+let favoriteSongsRepository = require("./repositories/favouriteSongsRepository.js");
+favoriteSongsRepository.init(app, dbClient);
+
 let songsRepository = require("./repositories/songsRepository.js");
 songsRepository.init(app, dbClient);
+
+require("./routes/favourites.js")(app, favoriteSongsRepository, songsRepository);
 require("./routes/songs.js")(app, songsRepository);
 
 // view engine setup
