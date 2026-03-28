@@ -60,7 +60,7 @@ songsRepository.init(app, dbClient);
 
 require("./routes/favourites.js")(app, favoriteSongsRepository, songsRepository);
 require("./routes/comments.js")(app, commentsRepository, songsRepository);
-require("./routes/songs.js")(app, songsRepository);
+require("./routes/songs.js")(app, songsRepository, commentsRepository);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

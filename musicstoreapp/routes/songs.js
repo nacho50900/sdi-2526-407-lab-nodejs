@@ -1,6 +1,5 @@
 const {ObjectId} = require("mongodb");
-const commentsRepository = require("../repositories/commentsRepository");
-module.exports = function(app, songsRepository) {
+module.exports = function(app, songsRepository, commentsRepository) {
 
     app.get("/songs", function(req, res) {
         let songs = [{
@@ -71,15 +70,17 @@ module.exports = function(app, songsRepository) {
                             if (req.files.audio != null) {
                                 let audio = req.files.audio;
                                 audio.mv(app.get("uploadPath") + '/public/audios/' + result.songId + '.mp3')
-                                    .then(() => res.send("Agregada la canción ID: " + result.songId))
+                                    .then(() => res.redirect('/publications'))
                                     .catch(error => res.send("Error al subir el audio de la canción"))
                             } else {
-                                res.send("Agregada la canción ID: " + result.songId)
+                                //res.send("Agregada la canción ID: " + result.songId)
+                                res.redirect('/publications');
                             }
                         })
                         .catch(error => res.send("Error al subir la portada de la canción"))
                 } else {
-                    res.send("Agregada la canción ID: " + result.songId)
+                    //res.send("Agregada la canción ID: " + result.songId)
+                    res.redirect('/publications');
                 }
             } else {
                 res.send("Error al insertar canción " + result.error);
@@ -112,7 +113,8 @@ module.exports = function(app, songsRepository) {
                 if (result == null) {
                     res.send("Error al actualizar la portada o el audio de la canción");
                 } else {
-                    res.send("Se ha modificado el registro correctamente");
+                    //res.send("Se ha modificado el registro correctamente");
+                    res.redirect('/publications');
                 }
             });
         }).catch(error => {
