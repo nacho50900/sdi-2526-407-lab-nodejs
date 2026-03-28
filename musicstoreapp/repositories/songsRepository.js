@@ -41,12 +41,23 @@ module.exports = {
             })
             .catch(err => callbackFunction({error: err.message}))
     },
-    updateSong: async function(newSong, filter, options) {
+    updateSong: async function (newSong, filter, options) {
         try {
             await this.dbClient.connect();
             const database = this.dbClient.db(this.database);
             const songsCollection = database.collection(this.collectionName);
             const result = await songsCollection.updateOne(filter, {$set: newSong}, options);
+            return result;
+        } catch (error) {
+            throw (error);
+        }
+    },
+    deleteSong: async function (filter, options) {
+        try {
+            await this.dbClient.connect();
+            const database = this.dbClient.db(this.database);
+            const songsCollection = database.collection(this.collectionName);
+            const result = await songsCollection.deleteOne(filter, options);
             return result;
         } catch (error) {
             throw (error);
