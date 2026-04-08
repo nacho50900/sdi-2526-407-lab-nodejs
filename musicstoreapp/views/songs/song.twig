@@ -12,9 +12,20 @@
 			 <h2>{{ song.title }}</h2>
 			 <p>{{ song.title }}</p>
 			 <p>{{ song.kind }}</p>
-			  <form class="form-horizontal" method="post" action="/songs/buy/{{ song._id }}">
+			  <!--<form class="form-horizontal" method="post" action="/songs/buy/{{ song._id }}">
 				  <button type="submit" class="btn btn-primary">Comprar: {{ song.price }}€</button>
-			  </form>
+			  </form>-->
+			  {% if canBuy %}
+				  <form method="post" action="/songs/buy/{{ song._id }}">
+					  <button type="submit" class="btn btn-primary">
+						  {{ song.price }} € — Comprar
+					  </button>
+				  </form>
+			  {% else %}
+				  <audio controls>
+					  <source src="/audios/{{ song._id }}.mp3" type="audio/mpeg">
+				  </audio>
+			  {% endif %}
 			 <!-- Cambiar el precio por "reproducir" si ya está comprada -->
 		  </div>
 		</div>

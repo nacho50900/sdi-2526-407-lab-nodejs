@@ -95,5 +95,29 @@ module.exports = {
         } catch (error) {
             throw (error);
         }
+    }, canBuy: async function (songId, userEmail) {
+        try {
+            await this.dbClient.connect();
+            const database = this.dbClient.db(this.database);
+
+            const songsCollection = database.collection(this.collectionName);
+            const song = await songsCollection.findOne({_id: songId});
+            if (song.author === userEmail) {
+                return false;
+            }
+
+            const purchasesCollection = database.collection('purchases');
+            const purchase = await purchasesCollection.findOne({
+                user: userEmail,
+                song_id: songId
+            });
+            if (purchase !== null) {
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            throw (error);
+        }
     }
 };

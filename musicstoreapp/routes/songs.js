@@ -204,11 +204,20 @@ module.exports = function(app, songsRepository, commentsRepository) {
             user: req.session.user,
             song_id: songId
         }
-        songsRepository.buySong(shop).then(result => {
-            if (result.insertedId === null || typeof (result.insertedId) === undefined) {
-                res.send("Se ha producido un error al comprar la canción")
+        songsRepository.canBuy(songId, req.session.user).then(canBuy =>
+        {
+            if (!canBuy) {
+                res.send("No puedes comprar esta canción");
             } else {
-                res.redirect("/purchases");
+                songsRepository.buySong(shop).then(result => {
+                    if (result.insertedId === null || typeof (result.insertedId) === undefined) {
+                        res.send("Se ha producido un error al comprar la canción")
+                    } else {
+                        res.redirect("/purchases");
+                    }
+                }).catch(error => {
+                    res.send("Se ha producido un error al comprar la canción " + error)
+                })
             }
         }).catch(error => {
             res.send("Se ha producido un error al comprar la canción " + error)
@@ -226,7 +235,13 @@ module.exports = function(app, songsRepository, commentsRepository) {
         songsRepository.findSong(filter, {}).then(song => {
             let commentFilter = {song_id: new ObjectId(req.params.id)};
             commentsRepository.getComments(commentFilter, {}).then(comments => {
-                res.render("songs/song.twig", {song: song, comments: comments});
+                songsRepository.canBuy(new ObjectId(req.params.id), req.session.user).then(canBuy => {
+                    res.render("songs/song.twig", {song: song, comments: comments, canBuy: canBuy});
+                }).catch(error => {
+                    res.send("Se ha producido un error al buscar la canción " + error);
+                });
+            }).catch(error => {
+                res.send("Se ha producido un error al buscar la canción " + error);
             });
         }).catch(error => {
             res.send("Se ha producido un error al buscar la canción " + error)
