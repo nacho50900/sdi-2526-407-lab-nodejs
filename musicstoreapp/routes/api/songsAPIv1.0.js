@@ -1,6 +1,6 @@
 const {ObjectId} = require("mongodb");
 
-module.exports = function (app, songsRepository) {
+module.exports = function (app, songsRepository, usersRepository) {
 
     app.get("/api/v1.0/songs", function (req, res) {
         let filter = {};
@@ -109,6 +109,35 @@ module.exports = function (app, songsRepository) {
         } catch (error) {
             res.status(500)
                 .json({error: "Se ha producido un error al intentar modificar la canción: "+ error.message})
+        }
+    });
+
+    app.post('/api/v1.0/users/login', async function (req, res) {
+        try {
+            const securePassword = app.get("crypto").createHmac('sha256', app.get('clave'))
+                .update(req.body.password).digest('hex');
+            const filter = {
+                email: req.body.email,
+                password: securePassword
+            };
+            const user = await usersRepository.findUser(filter, {});
+            if (user == null) {
+                return res.status(401).json({
+                    message: "usuario no autorizado",
+                    authenticated: false });
+            }
+            const token = app.get('jwt').sign(
+                { user: user.email, time: Date.now() / 1000 },
+                "secreto"
+            );
+            res.status(200).json({
+                message: "usuario autorizado",
+                authenticated: true,
+                token: token });
+        } catch (e) {
+            res.status(500).json({
+                message: "Se ha producido un error al verificar credenciales",
+                authenticated: false });
         }
     });
 
