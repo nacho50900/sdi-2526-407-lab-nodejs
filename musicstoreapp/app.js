@@ -3,6 +3,10 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
+let swaggerUi = require('swagger-ui-express');
+let swaggerJsdoc = require('swagger-jsdoc');
+let { Song } = require('./schemas/song.schema');
+let { SongRequest } = require('./schemas/songRequest.schema');
 
 let app = express();
 let jwt = require('jsonwebtoken');
@@ -94,6 +98,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API de la tienda de música de SDI',
+      version: '1.0.0',
+      description: 'Documentación interactiva de la API',
+    },
+    components: {          // ← mismo nivel que info y servers
+      schemas: {
+        Song,
+        SongRequest
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:8081',
+        description: 'Servidor de pruebas de la aplicación',
+      },
+    ],
+  },
+  apis: ['./routes/api/*.js'],
+};
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 //app.get("/error", function (req, res) {
 //  res.render('error.twig', {
 //    message: req.query.message,
