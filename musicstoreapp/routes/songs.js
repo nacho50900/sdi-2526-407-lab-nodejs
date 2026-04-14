@@ -1,6 +1,10 @@
 const {ObjectId} = require("mongodb");
 module.exports = function(app, songsRepository, commentsRepository) {
 
+    app.get("/test-error", function(req, res, next) {
+        next(createError(500, "Esto es un error de prueba"));
+    });
+
     app.get("/songs", function(req, res) {
         let songs = [{
             "title": "Blank space",

@@ -62,6 +62,7 @@ songsRepository.init(app, dbClient);
 
 require("./routes/favourites.js")(app, favoriteSongsRepository, songsRepository);
 require("./routes/comments.js")(app, commentsRepository, songsRepository);
+require("./routes/api/songsAPIv1.0.js")(app, songsRepository);
 require("./routes/songs.js")(app, songsRepository, commentsRepository);
 
 // view engine setup
@@ -76,6 +77,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 
+app.get("/error", function (req, res) {
+  res.render('error.twig', {
+    message: req.query.message,
+    error: {
+      status: req.query.status,
+      stack: req.query.stack
+    }
+  });
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
@@ -83,14 +94,14 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  console.log("Se ha producido un error " + err);
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
+  console.log("Se ha producido un error: " + err);
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {
+    message: err.message,
+    error: {
+      status: err.status || 500,
+      stack: err.stack
+    }
+  });
 });
-
 module.exports = app;
