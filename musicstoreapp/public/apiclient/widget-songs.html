@@ -1,20 +1,22 @@
 <div id="widget-songs" >
+    <input type="text" class="form-control" placeholder="Filtrar por nombre" id="filter-by-name"/>
     <button class="btn btn-primary" onclick="widgetAddSong()">Nueva Canción</button>
     <button class="btn" onclick="loadSongs()" >Actualizar</button>
     <table class="table table-hover">
         <thead>
-        <tr>
-            <th>Título</th>
-            <th>Género</th>
-            <th>Precio</th>
-            <th class="col-md-1"></th>
-        </tr>
+            <tr>
+                <th><a onclick="sortByTitle()">Título</a></th>
+                <th>Género</th>
+                <th><a onclick="sortByPrice()">Precio</a></th>
+                <th class="col-md-1"></th>
+            </tr>
         </thead>
         <tbody id="songsTableBody"></tbody>
     </table>
 </div>
 
 <script>
+    window.history.pushState("", "", "/apiclient/client.html?w=songs");
     let songs;
     var selectedSongId;
     function loadSongs() {
@@ -57,7 +59,45 @@
     function widgetAddSong() {
         $( "#main-container" ).load( "widget-add.html");
     }
+    $('#filter-by-name').on('input',function(e){
+        let filteredSongs = [];
+        let filterValue = $("#filter-by-name").val();
+        filteredSongs = songs.filter(song => song.title.toLowerCase().includes(filterValue.toLowerCase()));
+        updateSongsTable(filteredSongs);
+    });
+    function sortByPrice() {
+        songs.sort(function (a, b) {
+            if (parseFloat(a.price) > parseFloat(b.price)) return -1;
+            if (parseFloat(a.price) < parseFloat(b.price)) return 1;
+            return 0;
+        });
+        updateSongsTable(songs);
+    }
+    function sortByTitle() {
+        songs.sort(function (a, b) {
+            if (a.title > b.title) return 1;
+            if (a.title < b.title) return -1;
+            return 0;
+        });
+        updateSongsTable(songs);
+    }
+    var priceDesc = true;
+    function sortByPrice() {
+        if (priceDesc) {
+            songs.sort(function (a, b) {
+                return parseFloat(a.price) - parseFloat(b.price);
+            });
+        } else {
+            songs.sort(function (a, b) {
+                return parseFloat(b.price) - parseFloat(a.price);
+            });
+        }
+        updateSongsTable(songs);
+        priceDesc = !priceDesc //invertir ordenación
+    }
+
     loadSongs();
+
 
     //setInterval(function() {
     //    loadSongs();
