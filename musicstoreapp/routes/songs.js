@@ -235,6 +235,50 @@ module.exports = function(app, songsRepository, commentsRepository) {
     });
 
     app.get('/songs/:id', function (req, res) {
+        let songId = new ObjectId(req.params.id);
+        let filter = {_id: songId};
+        // 1. Buscamos la canción
+        songsRepository.findSong(filter, {}).then(song => {
+            let commentFilter = {song_id: songId};
+            // 2. Buscamos los comentarios de esa canción
+            commentsRepository.getComments(commentFilter, {}).then(comments => {
+                // 3. Comprobamos si el usuario puede comprar la canción
+                songsRepository.canBuy(songId, req.session.user).then(canBuy => {
+                    // 4. Llamada a la API de divisas para el precio en USD
+                    let settings = {
+                        url: "https://api.currencyapi.com/v3/latest?apikey=cur_live_SGPzXinGvzrnHGhUTGJIXROjlcnJ5zFcNYCOhavG&base_currency=EUR&currencies=USD",
+                        method: "get",
+                    };
+                    let rest = app.get("rest");
+                    rest(settings, function (error, response, body) {
+                        let rateUSD = 1; // Valor por defecto por si falla la API
+                        if (!error && response.statusCode == 200) {
+                            let responseObject = JSON.parse(body);
+                            rateUSD = responseObject.data.USD.value;
+                        }
+                        // Calculamos el valor en USD y lo fijamos a 2 decimales
+                        // Nota: Multiplicamos el precio en EUR por la tasa del USD
+                        let songValue = song.price * rateUSD;
+                        song.usd = Math.round(songValue * 100) / 100;
+                        // 5. Renderizamos con todos los datos necesarios
+                        res.render("songs/song.twig", {
+                            song: song,
+                            comments: comments,
+                            canBuy: canBuy
+                        });
+                    });
+                }).catch(error => {
+                    res.send("Error al comprobar compra: " + error);
+                });
+            }).catch(error => {
+                res.send("Error al buscar comentarios: " + error);
+            });
+        }).catch(error => {
+            res.send("Error al buscar la canción: " + error);
+        });
+    });
+    /*
+    app.get('/songs/:id', function (req, res) {
         let filter = {_id: new ObjectId(req.params.id)};
         songsRepository.findSong(filter, {}).then(song => {
             let commentFilter = {song_id: new ObjectId(req.params.id)};
@@ -250,7 +294,7 @@ module.exports = function(app, songsRepository, commentsRepository) {
         }).catch(error => {
             res.send("Se ha producido un error al buscar la canción " + error)
         });
-    });
+    });*/
 
     app.get('/promo*', function (req, res) {
 

@@ -18,7 +18,7 @@
 			  {% if canBuy %}
 				  <form method="post" action="/songs/buy/{{ song._id }}">
 					  <button type="submit" class="btn btn-primary">
-						  {{ song.price }} € — Comprar
+						  {{ song.price }} € - {{ song.usd }} $ - Comprar
 					  </button>
 				  </form>
 			  {% else %}
