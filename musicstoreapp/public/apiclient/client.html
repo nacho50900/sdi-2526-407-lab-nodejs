@@ -58,22 +58,6 @@
         $( "#main-container" ).load( "widget-songs.html");
     }
 
-    function songDelete(_id) {
-        $.ajax({
-            url: URLbase + "/songs/" + _id,
-            type: "DELETE",
-            data: {},
-            dataType: 'json',
-            headers: {"token": token},
-            success: function (response) {
-                console.log("Canción eliminada: " + _id);
-                $("#" + _id).remove(); // eliminar el <tr> de la canción
-            },
-            error: function (error) {
-                $("#main-container").load("widget-login.html");
-            }
-        });
-    }
 </script>
 </body>
 </html>

@@ -81,6 +81,34 @@
         });
         updateSongsTable(songs);
     }
+    function songDelete(_id) {
+        $.ajax({
+            url: URLbase + "/songs/" + _id,
+            type: "DELETE",
+            data: {},
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (response) {
+                console.log("Canción eliminada: " + _id);
+                $("#" + _id).remove(); // eliminar el <tr> de la canción
+            },
+            error: function (response) {
+                //$("#main-container").load("widget-login.html");
+                //console.log(errors);
+                $("#div-errors").remove();
+                let current_error = (typeof response.responseJSON.errors == "undefined") ? null : response.responseJSON.errors;
+                if (current_error != null) {
+                    $("#widget-songs")
+                        .prepend("<div id = 'div-errors' class='alert alert-danger'><ul id = 'ul-errors'></ul> </div>");
+                    $("#ul-errors").append("<li >" + current_error + "</li>");
+                }else {
+                    $("#widget-songs")
+                        .prepend("<div id = 'div-errors' class='alert alert-danger'>Se ha producido un error inesperado</div>");
+                }
+            }
+        });
+    }
+
     var priceDesc = true;
     function sortByPrice() {
         if (priceDesc) {

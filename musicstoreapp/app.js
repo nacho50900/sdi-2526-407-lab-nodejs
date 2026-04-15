@@ -106,7 +106,7 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'Documentación interactiva de la API',
     },
-    components: {          // ← mismo nivel que info y servers
+    components: {
       schemas: {
         Song,
         SongRequest
@@ -119,7 +119,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./routes/api/*.js'],
+  apis: [path.join(__dirname,'./routes/api/*.js')], //directory error solved
 };
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
