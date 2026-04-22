@@ -1,0 +1,48 @@
+.song-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.field-group input {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 0.0625rem solid #ccc;
+    font-size: 1rem;
+}
+
+.input-error {
+    border-color: #e74c3c !important;
+}
+
+.field-error {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    padding-left: 0.25rem;
+}
+
+.song-form button {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.2s;
+}
+
+.song-form button:hover:not(:disabled) {
+    background-color: #222;
+}
+
+.btn-disabled {
+    background-color: #aaa !important;
+    cursor: not-allowed !important;
+}

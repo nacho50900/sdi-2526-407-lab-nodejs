@@ -1,65 +1,60 @@
 import { useState } from "react";
 import { apiFetch } from "../services/ApiService.js";
 import "../assets/AddSongForm.css";
+import SongForm from "../components/SongForm";
+import SongToast from "../components/SongToast";
 
 const AddSongForm = ({ onSongAdded }) => {
     const [title, setTitle] = useState("");
     const [kind, setKind] = useState("");
     const [price, setPrice] = useState("");
-    const [error, setError] = useState("");
+    const [toastMessage, setToastMessage] = useState("");
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        setError("");
-        if (!title || !kind || !price) {
-            setError("Todos los campos son obligatorios");
-            return;
-        }
+        setToastMessage("");
+
         apiFetch("http://localhost:8081/api/v1.0/songs", {
             method: "POST",
-            body: JSON.stringify({
-                title,
-                kind,
-                price
-            })
+            body: JSON.stringify({ title, kind, price })
         })
-            .then(() => {
+            .then((data) => {
+                setToastType("success");
+                setToastMessage(data.message);
                 setTitle("");
                 setKind("");
                 setPrice("");
-                if (onSongAdded) {
-                    onSongAdded();
-                }
+                // quitamos onSongAdded() de aquí
             })
             .catch((err) => {
-                setError(err.message);
+                setToastType("error");
+                setToastMessage(err.message);
             });
     };
+    const [toastType, setToastType] = useState("error");
+
     return (
-<div className="add-song-container">
-    <h2>Añadir canción</h2>
-    {error && <div className="error">{error}</div>}
-    <form onSubmit={handleSubmit} className="add-song-form">
-        <input
-            type="text"
-            placeholder="Título"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-        />
-        <input
-            type="text"
-            placeholder="Género"
-            value={kind}
-            onChange={(e) => setKind(e.target.value)}
-        />
-        <input
-            type="number"
-            placeholder="Precio"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-        />
-        <button type="submit">Añadir</button>
-    </form>
-</div>
+        <div className="add-song-container">
+            <h2>Añadir canción</h2>
+            <SongForm
+                title={title}
+                setTitle={setTitle}
+                kind={kind}
+                setKind={setKind}
+                price={price}
+                setPrice={setPrice}
+                onSubmit={handleSubmit}
+            />
+            <SongToast
+                message={toastMessage}
+                type={toastType}
+                onClose={() => {
+                    setToastMessage("");
+                    if (toastType === "success" && onSongAdded) onSongAdded();
+                }}
+            />
+        </div>
+        //Inputs sacados a SongForm
     );
 };
 
