@@ -90,7 +90,8 @@ module.exports = function (app, songsRepository, usersRepository) {
                         if (result === null || result.deletedCount === 0) {
                             res.status(404).json({error: "ID inválido o no existe, no se ha borrado el registro."});
                         } else {
-                            res.status(200).send(JSON.stringify(result));
+                            //res.status(200).send(JSON.stringify(result));
+                            res.status(200).json({ message: "Canción eliminada correctamente." });
                         }
                     }).catch(error => {
                         res.status(500).json({error: "Se ha producido un error:" + error.message})

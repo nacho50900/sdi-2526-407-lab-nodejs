@@ -16,7 +16,8 @@ export const apiFetch = async (url, options = {}) => {
     if (!res.ok) {
         if (res.status === 401) {
             localStorage.removeItem("token");
-            throw new Error("UNAUTHORIZED");
+            //throw new Error("UNAUTHORIZED");
+            throw new Error(data?.error || "UNAUTHORIZED"); //ASI SE VERÍA MAS ESPECÍFICO
         }
         throw new Error(data?.error || "Error en la API");
     }
